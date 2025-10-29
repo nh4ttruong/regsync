@@ -17,7 +17,7 @@ A script toolkit to mirror container images and Helm charts from public registri
 
 Run the regsync with command and options:
 ```bash
-# Usage: ./regsync.sh <command> <name> [options]
+# Usage: regsync <command> <name> [options]
 
 # Commands:
 #   image <image_name>        Sync a container image.
