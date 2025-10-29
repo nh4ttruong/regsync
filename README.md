@@ -11,26 +11,33 @@ A script toolkit to mirror container images and Helm charts from public registri
 - Flexible input: supports both `nginx:latest` and `nginx --version latest`
 - Easy test scripts for real and dry-run cases
 - Installation via Makefile
+- **Set default registry and paths directly in the script with the `set` command**
 
 ## Usage
 
-Run the `regsync` with command and options:
+Run the regsync with command and options:
 ```bash
-# Usage: regsync <command> <name> [options]
+# Usage: ./regsync.sh <command> <name> [options]
 
 # Commands:
 #   image <image_name>        Sync a container image.
 #   chart <chart_name_or_oci_url> [repo_url]    Sync a Helm chart (OCI if starts with oci://, HTTP otherwise). For HTTP, chart_name can be 'repo/name'.
+#   set [--registry <url>] [--image-path <path>] [--chart-path <path>]   Set default registry and paths.
 
 # Options:
 #   -v, --version <tag>           Specify the version/tag of the artifact (default: latest).
 #   -p, --path <path>             Override the default destination path.
 #   -g, --registry <url>          Override the private registry URL.
-#   -s, --source-registry <url>   Specify the source registry for the image (e.g., ghcr.io).
+#   -s, --source-registry <url>   Specify the source registry for the image (e.g., oci.external-secrets.io).
 #   -f, --full-image <image>      Specify the full public image reference (auto-detect registry).
 #       --debug                   Enable detailed logging to a file in /tmp.
 #       --dry-run                 Show what would be done without executing.
 #   -h, --help                    Show this help message.
+```
+
+Set default registry and paths:
+```bash
+regsync set --registry <url> --image-path <path> --chart-path <path>
 ```
 
 > [!NOTE]

@@ -93,6 +93,7 @@ usage() {
     echo -e "${C_BOLD}Commands:${C_RESET}"
     echo "  image <image_name>        Sync a container image."
     echo "  chart <chart_name_or_oci_url> [repo_url]    Sync a Helm chart (OCI if starts with oci://, HTTP otherwise). For HTTP, chart_name can be 'repo/name'."
+    echo "  set [--registry <url>] [--image-path <path>] [--chart-path <path>]   Set default registry and paths."
     echo ""
     echo -e "${C_BOLD}Options:${C_RESET}"
     echo "  -v, --version <tag>           Specify the version/tag of the artifact (default: latest)."
@@ -352,6 +353,27 @@ handle_chart() {
 
 COMMAND=$1; shift
 path_override=""; artifact_version=""; source_registry=""; full_image=""
+
+# --- Set Command ---
+if [[ "$COMMAND" == "set" ]]; then
+    while [[ $# -gt 0 ]]; do
+        case "$1" in
+            --registry)
+                [[ -z "$2" || "$2" == -* ]] && { echo "Error: --registry requires a value"; exit 1; }
+                sed -i "s|^PRIVATE_REGISTRY_URL=.*$|PRIVATE_REGISTRY_URL=\"$2\"|" "$0"; shift 2 ;;
+            --image-path)
+                [[ -z "$2" || "$2" == -* ]] && { echo "Error: --image-path requires a value"; exit 1; }
+                sed -i "s|^IMAGE_PATH=.*$|IMAGE_PATH=\"$2\"|" "$0"; shift 2 ;;
+            --chart-path)
+                [[ -z "$2" || "$2" == -* ]] && { echo "Error: --chart-path requires a value"; exit 1; }
+                sed -i "s|^CHART_PATH=.*$|CHART_PATH=\"$2\"|" "$0"; shift 2 ;;
+            *)
+                echo "Unknown option: $1"; exit 1 ;;
+        esac
+    done
+    echo "Defaults updated in $0"
+    exit 0
+fi
 
 # Parse options first
 TEMP_ARGS=()
