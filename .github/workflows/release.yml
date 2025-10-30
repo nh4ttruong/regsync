@@ -1,5 +1,9 @@
 name: Create release and upload regsync
 
+permissions:
+  contents: write
+  packages: write
+
 on:
   push:
     tags:
