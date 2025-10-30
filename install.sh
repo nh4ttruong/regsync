@@ -2,7 +2,7 @@
 # install.sh - Automated installer for regsync and dependencies
 set -e
 
-REPO_URL="https://raw.githubusercontent.com/nh4ttruong/regsync/main/install.sh"
+REPO_URL="https://raw.githubusercontent.com/nh4ttruong/regsync/main/"
 INSTALL_PATH="/usr/local/bin"
 SCRIPT_NAME="regsync.sh"
 BINARY_NAME="regsync"
