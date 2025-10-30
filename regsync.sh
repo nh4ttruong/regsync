@@ -18,7 +18,7 @@
 ###########
 
 # --- Configuration ---
-SCRIPT_VERSION="1.0.0"
+SCRIPT_VERSION="latest"
 PRIVATE_REGISTRY_URL="${PRIVATE_REGISTRY_URL:-}"
 IMAGE_PATH="${IMAGE_PATH:-library}"
 CHART_PATH="${CHART_PATH:-charts}"

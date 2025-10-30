@@ -1,0 +1,55 @@
+name: Create release and upload regsync
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Create GitHub Release for tag
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref_name }}
+          release_name: ${{ github.ref_name }}
+          body: |
+            Automated release for tag ${{ github.ref_name }}.
+          draft: false
+          prerelease: false
+
+      - name: Update SCRIPT_VERSION in `regsync.sh` to tag version
+        id: set_version
+        env:
+          TAG: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+          VERSION="${TAG#v}"
+          echo "Setting SCRIPT_VERSION to '${VERSION}' in regsync.sh"
+          if [[ ! -f "regsync.sh" ]]; then
+            echo "regsync.sh not found in workspace" >&2
+            exit 1
+          fi
+          # Replace the line starting with SCRIPT_VERSION= with the new version
+          sed -E -i.bak "s/^SCRIPT_VERSION=.*/SCRIPT_VERSION=\"${VERSION}\"/" regsync.sh
+          echo "Updated regsync.sh (first 30 lines):"
+          sed -n '1,30p' regsync.sh
+
+      - name: Upload `regsync.sh` as release asset named `regsync`
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./regsync.sh
+          asset_name: regsync
+          asset_content_type: text/x-sh
